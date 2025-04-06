@@ -29,7 +29,8 @@ jobs:
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           external_repository: dwh20010724/dwh20010724.github.io
+          publish_branch: main
           publish_dir: ./public
-          keep_files: false
-          user_name: "GitHub Actions Bot"
-          user_email: "actions@github.com"
+          keep_files: true
+          user_name: "dwh20010724"
+          user_email: "2661490716@qq.com"
