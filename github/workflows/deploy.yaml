@@ -1,0 +1,39 @@
+name: Deploy Hugo Site
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+
+      - name: Build site
+        run: |
+          hugo --minify --gc
+          echo "BaseURL: ${{ github.event.repository.html_url }}" >> hugo.toml  # 动态注入配置
+      -name: Build Web
+        run: hugo -D
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY2 }}
+          external_repository: dwh20010724/dwh20010724.github.io
+          publish_branch: main
+          publish_dir: ./public
+          keep_files: true
+          user_name: "dwh20010724"
+          user_email: "2661490716@qq.com"
+          commit_message: auto deploy
