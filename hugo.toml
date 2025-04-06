@@ -1,4 +1,4 @@
-baseurl = "https://example.com"
+baseURL = "https://dwh20010724.github.io"
 defaultContentLanguage = "zh"
 languageCode = "zh"
 title = "Hugo Theme Dream"
