@@ -1,37 +1,35 @@
 name: Deploy Hugo Site
 
-   on:
-     push:
-       branches: [ main ]  # 触发条件：当代码推送到 main 分支时
+on:
+  push:
+    branches: [ main ]
 
-   jobs:
-     deploy:
-       runs-on: ubuntu-latest  # 使用 GitHub 的 Ubuntu 虚拟机
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
 
-       steps:
-         # 步骤 1：拉取代码（包括子模块）
-         - name: Checkout repository
-           uses: actions/checkout@v4
-           with:
-             submodules: recursive  # 重要！确保主题子模块被拉取
-             fetch-depth: 0
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
 
-         # 步骤 2：安装 Hugo
-         - name: Setup Hugo
-           uses: peaceiris/actions-hugo@v2
-           with:
-             hugo-version: 'latest'  # 自动获取最新版 Hugo
+      - name: Build site
+        run: |
+          hugo --minify --gc
+          echo "BaseURL: ${{ github.event.repository.html_url }}" >> hugo.toml  # 动态注入配置
 
-         # 步骤 3：生成静态文件
-         - name: Build site
-           run: hugo --minify --gc  # 压缩优化静态文件
-
-         # 步骤 4：部署到 GitHub Pages 仓库
-         - name: Deploy to GitHub Pages
-           uses: peaceiris/actions-gh-pages@v3
-           with:
-             deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}  # 引用部署密钥
-             external_repository: dwh20010724/dwh20010724.github.io  # Pages 仓库名
-             publish_dir: ./public  # Hugo 生成的静态文件目录
-             keep_files: false  # 清空目标仓库原有文件
-             commit_message: ${{ github.event.head_commit.message }}  # 沿用源码提交信息
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          external_repository: dwh20010724/dwh20010724.github.io
+          publish_dir: ./public
+          keep_files: false
+          user_name: "GitHub Actions Bot"
+          user_email: "actions@github.com"
