@@ -2,38 +2,32 @@ name: Deploy Hugo Site
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]  # 确保触发分支是 main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive
-          fetch-depth: 0
+          submodules: recursive  # 必须启用子模块拉取
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
 
-      - name: Build site
-        run: |
-          hugo --minify --gc
-          echo "BaseURL: ${{ github.event.repository.html_url }}" >> hugo.toml  # 动态注入配置
-      -name: Build Web
-        run: hugo -D
+      - name: Build
+        run: hugo --minify  # 生成静态文件到 public 目录
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY2 }}
-          external_repository: dwh20010724/dwh20010724.github.io
-          publish_branch: main
-          publish_dir: ./public
-          keep_files: true
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY2 }}  # 密钥名称必须一致
+          external_repository: dwh20010724/dwh20010724.github.io  # 替换为你的发布仓库
+          publish_branch: main  # 推送目标分支
+          publish_dir: ./public  # 发布目录
           user_name: "dwh20010724"
           user_email: "2661490716@qq.com"
-          commit_message: auto deploy
+          commit_message: 'Automated deployment'
