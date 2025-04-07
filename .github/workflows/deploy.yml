@@ -38,7 +38,7 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          deploy_key: ${{ secrets.Blog Automated Deploy2 }}
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY2 }}
           external_repository: dwh20010724/dwh20010724.github.io
           publish_branch: main
           publish_dir: ./public
